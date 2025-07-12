@@ -193,7 +193,12 @@ export class MemStorage implements IStorage {
 
     vendorsData.forEach(vendor => {
       const id = this.currentVendorId++;
-      this.vendors.set(id, { ...vendor, id });
+      this.vendors.set(id, { 
+        ...vendor, 
+        id,
+        imageUrl: vendor.imageUrl || null,
+        isVerified: vendor.isVerified ?? true
+      });
     });
 
     // Seed products
@@ -312,7 +317,13 @@ export class MemStorage implements IStorage {
 
     productsData.forEach(product => {
       const id = this.currentProductId++;
-      this.products.set(id, { ...product, id });
+      this.products.set(id, { 
+        ...product, 
+        id,
+        description: product.description || null,
+        isTopPick: product.isTopPick ?? false,
+        inStock: product.inStock ?? true
+      });
     });
 
     // Seed FAQs

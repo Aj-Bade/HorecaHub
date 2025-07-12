@@ -59,15 +59,15 @@ const Navbar = () => {
           <nav className="hidden lg:flex items-center space-x-8">
             {navItems.map((item) => (
               <Link key={item.name} href={item.href}>
-                <motion.a
-                  className={`text-gray-700 hover:text-brand-orange transition-colors font-medium ${
+                <motion.span
+                  className={`text-gray-700 hover:text-brand-orange transition-colors font-medium cursor-pointer ${
                     location === item.href ? "text-brand-orange" : ""
                   }`}
                   whileHover={{ y: -2 }}
                   transition={{ duration: 0.2 }}
                 >
                   {item.name}
-                </motion.a>
+                </motion.span>
               </Link>
             ))}
           </nav>
