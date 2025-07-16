@@ -1,12 +1,16 @@
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, TrendingUp, Package, Star } from "lucide-react";
+import { ArrowRight, TrendingUp, Package, Star, Sparkles } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { fadeInUp, staggerChildren, cardHover } from "@/lib/animations";
+import { sectionContainer, sectionTitle, gridItemStagger, gridItem, cardHover } from "@/lib/animations";
+import { useRef } from "react";
 import type { Category } from "@shared/schema";
 
 const CategoriesSection = () => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.1 });
+  
   const { data: categories, isLoading } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
   });
@@ -33,12 +37,34 @@ const CategoriesSection = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl shadow-lg p-6 animate-pulse">
-                <div className="w-16 h-16 bg-gray-200 rounded-xl mb-4" />
-                <div className="h-6 bg-gray-200 rounded mb-2" />
-                <div className="h-4 bg-gray-200 rounded mb-4" />
-                <div className="h-4 bg-gray-200 rounded w-24" />
-              </div>
+              <motion.div 
+                key={i} 
+                className="bg-white rounded-2xl shadow-lg p-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <motion.div 
+                  className="w-16 h-16 bg-gray-200 rounded-xl mb-4"
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                />
+                <motion.div 
+                  className="h-6 bg-gray-200 rounded mb-2"
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
+                />
+                <motion.div 
+                  className="h-4 bg-gray-200 rounded mb-4"
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }}
+                />
+                <motion.div 
+                  className="h-4 bg-gray-200 rounded w-24"
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 1.5, repeat: Infinity, delay: 0.6 }}
+                />
+              </motion.div>
             ))}
           </div>
         </div>
@@ -47,44 +73,78 @@ const CategoriesSection = () => {
   }
 
   return (
-    <section id="categories" className="py-20 bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="container mx-auto px-4">
+    <section ref={ref} id="categories" className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
+      {/* Background decorations */}
+      <div className="absolute inset-0">
+        <motion.div
+          className="absolute top-20 left-20 w-40 h-40 bg-brand-orange/10 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.6, 0.3]
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        <motion.div
+          className="absolute bottom-20 right-20 w-32 h-32 bg-brand-golden/10 rounded-full blur-2xl"
+          animate={{
+            scale: [1, 1.3, 1],
+            opacity: [0.2, 0.5, 0.2]
+          }}
+          transition={{
+            duration: 5,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1
+          }}
+        />
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
         <motion.div
           className="text-center mb-16"
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true }}
-          variants={fadeInUp}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          variants={sectionContainer}
         >
           <motion.div
-            className="inline-block mb-4"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
+            className="inline-block mb-6"
+            variants={sectionTitle}
           >
-            <Badge className="bg-brand-orange/10 text-brand-orange border-brand-orange/20 px-4 py-2 text-sm font-medium">
+            <Badge className="bg-brand-orange/10 text-brand-orange border-brand-orange/20 px-6 py-3 text-base font-medium">
+              <Sparkles className="mr-2 h-4 w-4" />
               12 Categories • 3,500+ Products
             </Badge>
           </motion.div>
-          <h2 className="text-4xl md:text-5xl font-bold text-brand-charcoal mb-4">
+          
+          <motion.h2 
+            className="text-4xl md:text-6xl font-bold text-brand-charcoal mb-6"
+            variants={sectionTitle}
+          >
             Product Categories
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          </motion.h2>
+          
+          <motion.p 
+            className="text-xl text-gray-600 max-w-3xl mx-auto"
+            variants={sectionTitle}
+          >
             Discover our comprehensive range of restaurant supplies and ingredients from verified suppliers across India
-          </p>
+          </motion.p>
         </motion.div>
 
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
-          variants={staggerChildren}
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true }}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          variants={gridItemStagger}
         >
           {categories?.map((category, index) => (
             <motion.div
               key={category.id}
-              variants={fadeInUp}
+              variants={gridItem}
               whileHover="whileHover"
               className="cursor-pointer group"
             >

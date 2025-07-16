@@ -1,10 +1,14 @@
-import { motion } from "framer-motion";
-import { Store, Users, ShoppingCart, Award, Clock, MapPin, CreditCard, TrendingUp } from "lucide-react";
+import { motion, useInView } from "framer-motion";
+import { Store, Users, ShoppingCart, Award, Clock, MapPin, CreditCard, TrendingUp, Sparkles } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { fadeInUp, staggerChildren } from "@/lib/animations";
+import { sectionContainer, sectionTitle, gridItemStagger, gridItem, staggerChildren, statsCounter, fadeInUp } from "@/lib/animations";
+import { useRef } from "react";
 
 const StatisticsSection = () => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.1 });
+  
   const stats = [
     {
       icon: Store,
@@ -68,53 +72,70 @@ const StatisticsSection = () => {
   ];
 
   return (
-    <section className="py-20 bg-brand-charcoal relative overflow-hidden">
-      {/* Background decoration */}
+    <section ref={ref} className="py-20 bg-brand-charcoal relative overflow-hidden">
+      {/* Enhanced background decoration */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-brand-orange/10 to-brand-golden/10" />
-        <div className="absolute top-20 right-20 w-64 h-64 bg-brand-orange/20 rounded-full blur-3xl" />
+        <motion.div 
+          className="absolute top-20 right-20 w-64 h-64 bg-brand-orange/20 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.6, 0.3],
+            x: [0, 30, 0]
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
         <div className="absolute bottom-20 left-20 w-80 h-80 bg-brand-golden/20 rounded-full blur-3xl" />
       </div>
       
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
           className="text-center mb-16"
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true }}
-          variants={fadeInUp}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          variants={sectionContainer}
         >
           <motion.div
-            className="inline-block mb-4"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
+            className="inline-block mb-6"
+            variants={sectionTitle}
           >
-            <Badge className="bg-brand-orange/20 text-brand-orange border-brand-orange/30 px-4 py-2 text-sm font-medium backdrop-blur-sm">
+            <Badge className="bg-brand-orange/20 text-brand-orange border-brand-orange/30 px-6 py-3 text-base font-medium backdrop-blur-sm">
+              <Sparkles className="mr-2 h-4 w-4" />
               Impact & Growth • Real-time Metrics
             </Badge>
           </motion.div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          
+          <motion.h2 
+            className="text-4xl md:text-6xl font-bold text-white mb-6"
+            variants={sectionTitle}
+          >
             Our Success in Numbers
-          </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+          </motion.h2>
+          
+          <motion.p 
+            className="text-xl text-gray-300 max-w-3xl mx-auto"
+            variants={sectionTitle}
+          >
             Building trust through quality service and reliable partnerships - see how we're revolutionizing restaurant supply chains across India
-          </p>
+          </motion.p>
         </motion.div>
 
         {/* Main statistics */}
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16"
-          variants={staggerChildren}
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true }}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          variants={gridItemStagger}
         >
           {stats.map((stat, index) => (
             <motion.div
               key={index}
               className="text-center group"
-              variants={fadeInUp}
+              variants={gridItem}
             >
               <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/20 transition-all duration-300 p-6">
                 <CardContent className="p-0">
@@ -146,16 +167,15 @@ const StatisticsSection = () => {
         {/* Additional metrics */}
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true }}
-          variants={staggerChildren}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          variants={gridItemStagger}
         >
           {additionalStats.map((stat, index) => (
             <motion.div
               key={index}
               className="text-center"
-              variants={fadeInUp}
+              variants={gridItem}
             >
               <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-all duration-300 group">
                 <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-white/20 transition-colors">
